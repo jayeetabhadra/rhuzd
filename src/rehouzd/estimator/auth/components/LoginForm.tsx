@@ -24,8 +24,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onError, onSignUp, onFor
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
 
-    // Dynamically choose the color for the "Forgot password?" link
-    const forgotLinkColor = useColorModeValue('red.500', 'red.300');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,10 +42,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onError, onSignUp, onFor
                 <FormControl isRequired>
                     <FormLabel>Email</FormLabel>
                     <Input
+                        id="login-email"
                         type="email"
                         placeholder="Email"
                         value={loginEmail}
                         onChange={(e) => setLoginEmail(e.target.value)}
+                        borderColor="border.primary"
+                        _hover={{ borderColor: 'brand.500' }}
+                        _focus={{ borderColor: 'brand.500', boxShadow: `0 0 0 1px brand.500` }}
                     />
                 </FormControl>
                 <FormControl isRequired>
@@ -57,6 +59,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onError, onSignUp, onFor
                         placeholder="Password"
                         value={loginPassword}
                         onChange={(e) => setLoginPassword(e.target.value)}
+                        borderColor="border.primary"
+                        _hover={{ borderColor: 'brand.500' }}
+                        _focus={{ borderColor: 'brand.500', boxShadow: `0 0 0 1px brand.500` }}
                     />
                 </FormControl>
                 {error && (

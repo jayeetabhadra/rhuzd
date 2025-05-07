@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/b31fcd63-16c4-4da4-835d-b12a60dde87b/resourceGroups/rhuzdrggrp/providers/Microsoft.Web/sites/rhuzd",
+    "appService.deploySubpath": "build"
+}

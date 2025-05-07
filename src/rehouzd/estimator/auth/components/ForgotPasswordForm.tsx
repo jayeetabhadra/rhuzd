@@ -8,12 +8,19 @@ import {
     Button,
 } from '@chakra-ui/react';
 
+// Helper function instead of importing from an external file
+const fetchApi = async (url: string, options: RequestInit = {}) => {
+  const response = await fetch(url, options);
+  return response;
+};
+
 interface ForgotPasswordFormProps {
     onClose: () => void;
     onBackToLogin: () => void;
+    onSubmit?: () => void; // Optional callback for when reset is successful
 }
 
-const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onClose, onBackToLogin }) => {
+const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onClose, onBackToLogin, onSubmit }) => {
     const [resetStep, setResetStep] = useState<'request' | 'reset'>('request');
     const [resetEmail, setResetEmail] = useState('');
     const [resetToken, setResetToken] = useState('');
@@ -25,7 +32,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onClose, onBack
         setResetError('');
         setResetSuccessMessage('');
         try {
-            const res = await fetch('/api/auth/request-password-reset', {
+            const res = await fetchApi('/api/auth/request-password-reset', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: resetEmail }),
@@ -36,7 +43,13 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onClose, onBack
                 return;
             }
             setResetSuccessMessage('Password reset email sent. Check your email for the reset token/link.');
-            setResetStep('reset');
+            
+            // Notify parent component of success if onSubmit is provided
+            if (onSubmit) {
+                onSubmit();
+            } else {
+                setResetStep('reset');
+            }
         } catch (error) {
             console.error('Error requesting password reset:', error);
             setResetError('Error requesting password reset');
@@ -47,7 +60,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onClose, onBack
         setResetError('');
         setResetSuccessMessage('');
         try {
-            const res = await fetch('/api/auth/reset-password', {
+            const res = await fetchApi('/api/auth/reset-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: resetEmail, token: resetToken, newPassword }),
@@ -58,12 +71,19 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onClose, onBack
                 return;
             }
             setResetSuccessMessage('Password reset successful. You can now log in with your new password.');
-            setResetStep('request');
-            onClose(); // Close the modal after successful reset
+            
             // Optionally clear the reset form fields
             setResetEmail('');
             setResetToken('');
             setNewPassword('');
+            
+            // Notify parent component of success if onSubmit is provided
+            if (onSubmit) {
+                onSubmit();
+            } else {
+                setResetStep('request');
+                onClose(); // Close the modal after successful reset
+            }
         } catch (error) {
             console.error('Error resetting password:', error);
             setResetError('Error resetting password');
@@ -85,7 +105,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onClose, onBack
                     </FormControl>
                     {resetError && <Text color="red.500" fontSize="sm">{resetError}</Text>}
                     {resetSuccessMessage && <Text color="green.500" fontSize="sm">{resetSuccessMessage}</Text>}
-                    <Button colorScheme="teal" onClick={handleRequestReset} disabled={!resetEmail}>
+                    <Button colorScheme="brand" onClick={handleRequestReset} disabled={!resetEmail}>
                         Request Reset
                     </Button>
                     <Button variant="ghost" onClick={onBackToLogin}>
@@ -114,7 +134,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onClose, onBack
                     </FormControl>
                     {resetError && <Text color="red.500" fontSize="sm">{resetError}</Text>}
                     {resetSuccessMessage && <Text color="green.500" fontSize="sm">{resetSuccessMessage}</Text>}
-                    <Button colorScheme="teal" onClick={handleResetPasswordSubmit} disabled={!resetEmail || !resetToken || !newPassword}>
+                    <Button colorScheme="brand" onClick={handleResetPasswordSubmit} disabled={!resetEmail || !resetToken || !newPassword}>
                         Reset Password
                     </Button>
                     <Button variant="ghost" onClick={() => setResetStep('request')}>

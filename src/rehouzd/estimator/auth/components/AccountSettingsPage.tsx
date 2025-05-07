@@ -9,10 +9,15 @@ import {
     Button,
     useToast,
     HStack,
+    Text,
+    IconButton,
+    Flex,
+    Tooltip,
 } from '@chakra-ui/react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { setUserData } from '../../store/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { CheckIcon, CloseIcon } from '@chakra-ui/icons';
 
 const AccountSettingsPage: React.FC = () => {
     const navigate = useNavigate();
@@ -27,8 +32,13 @@ const AccountSettingsPage: React.FC = () => {
     const [lastName, setLastName] = useState(lname);
     const [mobileNumber, setMobileNumber] = useState(mobile);
 
-    // Determines if fields are in editing mode (editable) or read-only
-    const [isEditing, setIsEditing] = useState(false);
+    // Define theme colors
+    const bgColor = 'background.primary';
+    const borderColor = 'border.primary';
+    const textColor = 'text.primary';
+    const textSecondaryColor = 'text.secondary';
+    const inputDisabledBg = 'background.secondary';
+    const borderFocusColor = 'brand.500';
 
     // When Redux user data changes, update the local state
     useEffect(() => {
@@ -40,6 +50,7 @@ const AccountSettingsPage: React.FC = () => {
     // Check if any changes have been made compared to the original values from Redux
     const hasChanges =
         firstName !== fname || lastName !== lname || mobileNumber !== mobile;
+    
     // Check if all editable fields are empty (using fallback empty strings to avoid errors)
     const isEmpty =
         !((firstName || '').trim() || (lastName || '').trim() || (mobileNumber || '').trim());
@@ -102,8 +113,6 @@ const AccountSettingsPage: React.FC = () => {
                     duration: 5000,
                     isClosable: true,
                 });
-                // Exit editing mode
-                setIsEditing(false);
             }
         } catch (error) {
             toast({
@@ -116,82 +125,119 @@ const AccountSettingsPage: React.FC = () => {
         }
     };
 
-    // Handle button click: if not editing, toggle to edit mode; if editing, then update if changes exist
-    const handleButtonClick = async () => {
-        if (!isEditing) {
-            setIsEditing(true);
-        } else {
-            if (hasChanges) {
-                // Only attempt to update if fields are not all empty
-                if (!isEmpty) {
-                    await handleUpdateProfile();
-                }
-            } else {
-                // If no changes were made, revert local state and exit editing mode
-                setFirstName(fname);
-                setLastName(lname);
-                setMobileNumber(mobile);
-                setIsEditing(false);
-            }
-        }
+    // Handle canceling the changes and reverting to original values
+    const handleCancel = () => {
+        setFirstName(fname);
+        setLastName(lname);
+        setMobileNumber(mobile);
+        toast({
+            title: 'Changes discarded',
+            status: 'info',
+            duration: 3000,
+            isClosable: true,
+        });
     };
 
-    // Button label depends on whether we're editing and if there are changes
-    const buttonLabel = !isEditing
-        ? 'Edit Profile'
-        : hasChanges
-            ? 'Update Profile'
-            : 'Edit Profile';
-
     return (
-        <Box p={8} maxW="600px" mx="auto">
-            <Heading as="h2" size="lg" mb={6}>
+        <Box 
+            p={8} 
+            maxW="800px" 
+            mx="auto" 
+            my={8}
+            bg={bgColor}
+            borderRadius="lg"
+            boxShadow="md"
+            borderWidth="1px"
+            borderColor={borderColor}
+        >
+            <Heading as="h2" size="lg" mb={6} color={textColor}>
                 Account Settings
             </Heading>
-            <VStack spacing={4}>
+            <Text mb={6} fontSize="md" color={textSecondaryColor}>
+                Make changes to your profile information below. Your changes will be saved automatically.
+            </Text>
+            <VStack spacing={6} align="stretch">
                 <FormControl id="fname">
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel color={textColor}>First Name</FormLabel>
                     <Input
-                        placeholder="Not provided"
+                        placeholder="Enter your first name"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        isReadOnly={!isEditing}
+                        borderColor={borderColor}
+                        _hover={{ borderColor: borderFocusColor }}
+                        _focus={{ borderColor: borderFocusColor, boxShadow: `0 0 0 1px ${borderFocusColor}` }}
                     />
                 </FormControl>
                 <FormControl id="lname">
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel color={textColor}>Last Name</FormLabel>
                     <Input
-                        placeholder="Not provided"
+                        placeholder="Enter your last name"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        isReadOnly={!isEditing}
+                        borderColor={borderColor}
+                        _hover={{ borderColor: borderFocusColor }}
+                        _focus={{ borderColor: borderFocusColor, boxShadow: `0 0 0 1px ${borderFocusColor}` }}
                     />
                 </FormControl>
                 <FormControl id="email">
-                    <FormLabel>Email</FormLabel>
-                    <Input placeholder="Not available" value={email || ''} isReadOnly />
+                    <FormLabel color={textColor}>Email</FormLabel>
+                    <Input 
+                        placeholder="Not available" 
+                        value={email || ''} 
+                        isReadOnly 
+                        bg={inputDisabledBg}
+                        borderColor={borderColor}
+                    />
+                    <Text fontSize="sm" mt={1} color={textSecondaryColor}>
+                        Email cannot be changed. Contact support for assistance.
+                    </Text>
                 </FormControl>
                 <FormControl id="mobile">
-                    <FormLabel>Mobile Number</FormLabel>
+                    <FormLabel color={textColor}>Mobile Number</FormLabel>
                     <Input
-                        placeholder="Not provided"
+                        placeholder="Enter your mobile number"
                         value={mobileNumber}
                         onChange={(e) => setMobileNumber(e.target.value)}
-                        isReadOnly={!isEditing}
+                        borderColor={borderColor}
+                        _hover={{ borderColor: borderFocusColor }}
+                        _focus={{ borderColor: borderFocusColor, boxShadow: `0 0 0 1px ${borderFocusColor}` }}
                     />
                 </FormControl>
-                <HStack>
+
+                {/* Footer with action buttons */}
+                <Flex justifyContent="space-between" mt={4}>
                     <Button
-                        colorScheme="teal"
-                        onClick={handleButtonClick}
-                        isDisabled={isEditing && hasChanges && isEmpty}
+                        variant="outline"
+                        onClick={() => navigate('/')}
+                        borderColor={borderColor}
+                        _hover={{ borderColor: borderFocusColor }}
                     >
-                        {buttonLabel}
+                        Back to Home
                     </Button>
-                    <Button variant="outline" onClick={() => navigate('/estimate')}>
-                        Go Back
-                    </Button>
-                </HStack>
+
+                    {hasChanges && !isEmpty && (
+                        <HStack spacing={4}>
+                            <Tooltip label="Discard changes">
+                                <IconButton
+                                    aria-label="Discard changes"
+                                    icon={<CloseIcon />}
+                                    onClick={handleCancel}
+                                    colorScheme="red"
+                                    variant="outline"
+                                />
+                            </Tooltip>
+                            <Tooltip label="Save changes">
+                                <Button
+                                    leftIcon={<CheckIcon />}
+                                    colorScheme="brand"
+                                    onClick={handleUpdateProfile}
+                                >
+                                    Update Profile
+                                </Button>
+                            </Tooltip>
+                        </HStack>
+                    )}
+                </Flex>
             </VStack>
         </Box>
     );

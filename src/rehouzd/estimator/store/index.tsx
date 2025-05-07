@@ -2,6 +2,9 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import userReducer from './userSlice';
 import addressReducer from './addressSlice';
 import propertyReducer from './propertySlice';
+import buyerReducer from './buyerSlice';
+import underwriteReducer from './underwriteSlice';
+import buyerMatchingReducer from './buyerMatchingSlice';
 import {
     persistStore,
     persistReducer,
@@ -18,12 +21,15 @@ const rootReducer = combineReducers({
     user: userReducer,
     address: addressReducer,
     property: propertyReducer,
+    buyers: buyerReducer,
+    underwrite: underwriteReducer,
+    buyerMatching: buyerMatchingReducer,
 });
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['user', 'address'],
+    whitelist: ['user', 'address', 'property', 'buyers', 'underwrite', 'buyerMatching'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

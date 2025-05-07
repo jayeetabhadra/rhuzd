@@ -3,70 +3,80 @@ import {
   Box,
   Container,
   Stack,
-  SimpleGrid,
   Text,
   Link,
+  HStack,
+  Image,
   Flex,
-  useColorModeValue,
+  Icon,
+  Center,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react';
 
-export default function Footer() {
-  // These hooks return a different value depending on whether
-  // the user is in light or dark mode.
-  const topBg = useColorModeValue('gray.50', 'gray.800');
-  const topColor = useColorModeValue('gray.700', 'gray.100');
-
-  const bottomBg = useColorModeValue('gray.600', 'gray.900');
-  const bottomColor = useColorModeValue('white', 'gray.100');
-
+const Footer = () => {  
   return (
-    <Box bg={topBg} color={topColor}>
-      <Container as={Stack} maxW={'6xl'} py={10}>
-        <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }}>
-          <Stack align={'flex-start'}>
-            <Text fontWeight={'500'} fontSize={'lg'} mb={2}>
-              Company
-            </Text>
-            <Link href={'#'}>About Us</Link>
-            <Link href={'#'}>Blog</Link>
-            <Link href={'#'}>Careers</Link>
-            <Link href={'#'}>Contact Us</Link>
-          </Stack>
-
-          <Stack align={'flex-start'}>
-            <Text fontWeight={'500'} fontSize={'lg'} mb={2}>
-              Services
-            </Text>
-            <Link href={'#'}>Marketplace</Link>
-            <Link href={'#'}>Analytics</Link>
-            <Link href={'#'}>Underwriting</Link>
-          </Stack>
-
-          <Stack align={'flex-start'}>
-            <Text fontWeight={'500'} fontSize={'lg'} mb={2}>
-              Legal
-            </Text>
-            <Link href={'#'}>Privacy Policy</Link>
-            <Link href={'#'}>Terms of Service</Link>
-          </Stack>
-
-          <Stack align={'flex-start'}>
-            <Text fontWeight={'500'} fontSize={'lg'} mb={2}>
-              Follow Us
-            </Text>
-            <Link href={'#'}>LinkedIn</Link>
-            <Link href={'#'}>Twitter</Link>
-          </Stack>
-        </SimpleGrid>
+    <Box bg="white" color="gray.600" py={8} borderTopWidth="1px" borderColor="gray.200">
+      <Container maxW="container.xl">
+        {/* Logo */}
+        <Center mb={8}>
+          <Image 
+            src="/rehouzd-logo.png" 
+            alt="Rehouzd Logo" 
+            height="90px" 
+            width="180px"
+          />
+        </Center>
+        
+        {/* Contact information */}
+        <Center mb={8}>
+          <HStack spacing={2} fontSize="md">
+            <Text fontFamily="body">Call Us:</Text>
+            <Link href="tel:310-689-8695" fontWeight="bold" color="gray.800" fontFamily="body">
+              310-689-8695
+            </Link>
+            <Text mx={2} fontFamily="body">|</Text>
+            <Text fontFamily="body">Email Us:</Text>
+            <Link href="mailto:Deal@rehouzd.com" fontWeight="bold" color="gray.800" fontFamily="body">
+              Deal@rehouzd.com
+            </Link>
+          </HStack>
+        </Center>
+        
+        {/* License information */}
+        <Box 
+          bg="#104911" 
+          color="white" 
+          py={6} 
+          px={8} 
+          borderRadius="md"
+          maxW="container.lg"
+          mx="auto"
+          position="relative"
+        >
+          <Grid templateColumns={{ base: "1fr", md: "1fr auto" }} gap={4}>
+            <Center>
+            <GridItem>
+              <Text fontWeight="bold" fontSize="lg" mb={1} fontFamily="heading">SEAN KIRK</Text>
+              <Text fontFamily="body" fontSize="sm" mb={1}>REHOUZD REALTY GROUP</Text>
+              <Text fontFamily="body" fontSize="sm" mb={1}>TX TREC Information About Brokerage Services,</Text>
+              <Text fontFamily="body" fontSize="sm" mb={1}>TREC Consumer Protection Notice</Text>
+              <Text fontFamily="body" fontSize="sm" mb={1}>License: 728419</Text>
+              <Text fontFamily="body" fontSize="sm">TN Curb Realty - 11205 Lebanon Rd Mt Juliet TN 37122</Text>
+            </GridItem>
+            <GridItem >
+              <Image 
+                src="/equal-housing-opportunity.png" 
+                alt="Equal Housing Opportunity" 
+                height="60px"
+              />
+            </GridItem>
+            </Center>
+          </Grid>
+        </Box>
       </Container>
-
-      <Box as="footer" bg={bottomBg} color={bottomColor} py={4}>
-        <Flex justify="center">
-          <Text fontSize="sm">
-            &copy; {new Date().getFullYear()} ReHouzd Inc. All rights reserved.
-          </Text>
-        </Flex>
-      </Box>
     </Box>
   );
-}
+};
+
+export default Footer;

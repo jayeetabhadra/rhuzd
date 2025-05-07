@@ -1,17 +1,27 @@
-import React from 'react';
 import { Box } from '@chakra-ui/react';
-import Navbar from './components/Navbar';
-import MarketplaceSection from './components/MarketplaceSection';
-import StatsSection from './components/StatsSection';
-import AboutFounder from './components/AboutFounder';
-import Footer from './components/Footer';
+import Hero from './components/Hero';
+import HowItWorks from './components/HowItWorks';
 
 const LandingPage = () => {
+  
+  const heroStyle = {
+    background: 'linear-gradient(to bottom, #104911, #0a3c34)',
+    minHeight: '90vh',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    paddingTop: '2rem',
+    paddingBottom: '4rem',
+  };
+
   return (
-    <Box>
-      <MarketplaceSection />
-      <StatsSection />
-      <AboutFounder /> 
+    <Box sx={heroStyle}  minH="100vh">
+      <Hero />
+      <br />
+      <br />
+      <HowItWorks />
     </Box>
   );
 };
